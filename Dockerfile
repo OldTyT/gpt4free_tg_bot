@@ -11,6 +11,10 @@ ENV REDIS_HOST="redis"\
     PROGRAM_TYPE="worker" \
     LOG_LEVEL="INFO"
 
-RUN  pip install --no-cache -r requirements.txt
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y gcc g++ && \
+    pip install --no-cache -r requirements.txt && \
+    apt-get purge -y gcc g++ && \
+    rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT /app/entrypoint.sh
