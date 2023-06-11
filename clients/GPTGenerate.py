@@ -20,9 +20,9 @@ class GPT4TextGenerate(BaseSettings):
                     pass
             sleep(30)
         self.send_message("Smth error", chat_id, tg_bot_token)
-    
+
     def gpt4_generate(self, prompt):
-        text = gpt4free.Completion.create(Provider.You, prompt=prompt)
+        text = gpt4free.Completion.create(Provider.You, prompt=prompt, detailed=True, include_links=True)
         return text.encode().decode('unicode_escape')
 
 
