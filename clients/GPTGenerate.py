@@ -1,5 +1,3 @@
-import gpt4free
-from gpt4free import Provider
 from pydantic import BaseSettings, SecretStr
 import telebot
 
@@ -22,7 +20,7 @@ class GPT4TextGenerate(BaseSettings):
         self.send_message("Smth error", chat_id, tg_bot_token)
 
     def gpt4_generate(self, prompt):
-        text = gpt4free.Completion.create(Provider.You, prompt=prompt, detailed=True, include_links=True)
+        text = g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=False, provider=g4f.Provider.Phind)
         return text.encode().decode('unicode_escape')
 
 
