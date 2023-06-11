@@ -9,8 +9,6 @@ from aiogram.utils import executor
 from redis import Redis
 from pydantic import SecretStr
 from rq import Queue
-#from aiogram.enums.parse_mode import ParseMode
-# from aiogram.fsm.storage.memory import MemoryStorage
 
 from models.runtime import RuntimeSettings
 from jobs import GenerateTextWithGPTModel
@@ -34,32 +32,38 @@ state_cfg = RuntimeSettings(
 )
 
 
+def prompt_gpt4_start(prompt, chat_id):
+    gpt4_prompt_job = state_cfg.rq_queue.enqueue(
+        GenerateTextWithGPTModel,
+        chat_id=message.chat.id,
+        prompt=prompt,
+        tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
+        result_ttl=3600
+    )
+
+
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
-    await message.answer("Hello! I'm GPT 4 language model")
+    await message.answer("Hello! I'm GPT 4 language model.")
 
 
 @dp.message_handler(commands=['gen'])
 async def message_gen_cmd(message: types.Message):
-    gpt4_prompt_job = state_cfg.rq_queue.enqueue(
-        GenerateTextWithGPTModel,
-        chat_id=message.chat.id,
+    if len(message.text) < 5:
+        await message.answer(f"The text is very short.")
+        return
+    prompt_gpt4_start(
         prompt=message.text[5:],  # remove '/gen ' from msg
-        tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
-        result_ttl=3600
+        chat_id=message.chat.id
     )
     await message.answer(f"Wait please...")
 
+
 @dp.message_handler()
 async def all_message_handler(message: types.Message):
-    gpt4_prompt_job = state_cfg.rq_queue.enqueue(
-        GenerateTextWithGPTModel,
-        chat_id=message.from_user.id,
-        prompt=message.text,
-        tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
-        result_ttl=3600
-    )
+    prompt_gpt4_start(prompt=message.text, chat_id=message.from_user.id)
     await message.answer(f"Wait please...")
+
 
 if __name__ == '__main__':
     executor.start_polling(dp)
