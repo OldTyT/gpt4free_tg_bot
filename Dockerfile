@@ -3,7 +3,7 @@ FROM python:3.10.9-alpine3.17 AS builder
 COPY . .
 
 RUN apk add --no-cache gcc g++ musl-dev git && \
-    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt && \
+    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
 FROM python:3.10.9-alpine3.17
 
