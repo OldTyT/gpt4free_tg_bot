@@ -33,12 +33,25 @@ state_cfg = RuntimeSettings(
     last_update=datetime.fromtimestamp(0)
 )
 
+
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
     await message.answer("Hello! I'm GPT 4 language model")
 
+
+@dp.message_handler(commands=['gen'])
+async def message_gen_cmd(message: types.Message):
+    gpt4_prompt_job = state_cfg.rq_queue.enqueue(
+        GenerateTextWithGPTModel,
+        chat_id=message.chat.id,
+        prompt=message.text,
+        tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
+        result_ttl=3600
+    )
+    await message.answer(f"Wait please...")
+
 @dp.message_handler()
-async def message_handler(message: types.Message):
+async def all_message_handler(message: types.Message):
     gpt4_prompt_job = state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
         chat_id=message.from_user.id,

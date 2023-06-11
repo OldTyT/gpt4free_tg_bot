@@ -29,5 +29,5 @@ class GPT4TextGenerate(BaseSettings):
         max_length = 4096
         chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
         for chunk in chunks:
-            bot.send_message(chat_id, chunk)
+            bot.send_message(chat_id, chunk, parse_mode='Markdown')
         return True
