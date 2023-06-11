@@ -44,7 +44,7 @@ async def message_gen_cmd(message: types.Message):
     gpt4_prompt_job = state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
         chat_id=message.chat.id,
-        prompt=message.text,
+        prompt=message.text[5:],  # remove '/gen ' from msg
         tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
         result_ttl=3600
     )
