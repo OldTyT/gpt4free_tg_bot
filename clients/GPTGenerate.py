@@ -21,7 +21,7 @@ class GPT4TextGenerate(BaseSettings):
         self.send_message("Smth error", chat_id, tg_bot_token)
 
     def gpt4_generate(self, prompt):
-        return g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=False, provider=g4f.Provider.Phind)
+        return g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=False, provider=g4f.Provider.Forefront)
 
 
     def send_message(self, text, chat_id, tg_bot_token):
