@@ -1,5 +1,6 @@
 from pydantic import BaseSettings, SecretStr
 import telebot
+import g4f
 
 from logger import logger
 
