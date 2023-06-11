@@ -1,0 +1,7 @@
+gpt4free==1.0.2
+aiogram==2.25.1
+loguru==0.7.0
+pydantic==1.10.9
+redis==4.5.5
+rq==1.15.0
+pyTelegramBotAPI==4.12.0
