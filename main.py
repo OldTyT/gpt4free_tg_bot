@@ -35,7 +35,7 @@ state_cfg = RuntimeSettings(
 def prompt_gpt4_start(prompt, chat_id):
     gpt4_prompt_job = state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
-        chat_id=message.chat.id,
+        chat_id=chat_id,
         prompt=prompt,
         tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
         result_ttl=3600
