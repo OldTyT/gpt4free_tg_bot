@@ -1,15 +1,7 @@
-FROM python:3.10.9-alpine3.17 AS builder
-
-COPY . .
-
-RUN apk add --no-cache gcc g++ musl-dev git && \
-    pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
-
-FROM python:3.10.9-alpine3.17
+FROM python:3.11.4-slim-buster
 
 WORKDIR /app
 COPY . .
-COPY --from=builder /app/wheels /wheels
 
 ENV REDIS_HOST="redis"\
     REDIS_AUTH="" \
@@ -19,6 +11,6 @@ ENV REDIS_HOST="redis"\
     PROGRAM_TYPE="worker" \
     LOG_LEVEL="INFO"
 
-RUN pip install --no-cache /wheels/*
+RUN  pip install --no-cache -r requirements.txt
 
-ENTRYPOINT entrypoint.sh
+ENTRYPOINT /app/entrypoint.sh
