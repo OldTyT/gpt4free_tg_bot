@@ -4,6 +4,8 @@ import typer
 
 from loguru import logger
 from db.base import init_models
+from models.users import Users  # noqa: F401
+from models.history import MessageHistory  # noqa: F401
 
 cli = typer.Typer()
 
