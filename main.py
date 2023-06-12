@@ -9,6 +9,7 @@ from aiogram.utils import executor
 from redis import Redis
 from pydantic import SecretStr
 from rq import Queue, Retry
+from loguru import my_logger
 
 from models.runtime import RuntimeSettings
 from jobs import GenerateTextWithGPTModel
@@ -33,7 +34,7 @@ state_cfg = RuntimeSettings(
 
 
 def prompt_gpt4_start(prompt, chat_id):
-    logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
+    my_logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
     gpt4_prompt_job = state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
         chat_id=chat_id,
