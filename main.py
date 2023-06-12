@@ -2,16 +2,13 @@ import os
 import logging  # noqa F401
 import logger  # noqa F401
 from datetime import datetime, timezone
-import asyncio
 
-from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from redis import Redis
 from pydantic import SecretStr
 from rq import Queue, Retry
 from loguru import logger as my_logger
-from db.base import get_session
 
 from models.runtime import RuntimeSettings
 from jobs import GenerateTextWithGPTModel

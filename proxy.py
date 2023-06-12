@@ -1,10 +1,9 @@
 import json
 
-from sqlalchemy.ext.asyncio import AsyncSession
 import jsonpickle
 
 from loguru import logger
-from models.users import Users
+from models.users import Users  # noqa: F401
 from models.history import MessageHistory
 from db.base import get_session
 

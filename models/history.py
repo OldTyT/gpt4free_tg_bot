@@ -1,5 +1,4 @@
 from sqlalchemy import Column
-from sqlalchemy import String
 from sqlalchemy import Integer
 from sqlalchemy.dialects.postgresql import JSON
 

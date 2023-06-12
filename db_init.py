@@ -13,5 +13,6 @@ def db_init_models():
     asyncio.run(init_models())
     logger.info("Table created")
 
+
 if __name__ == '__main__':
     cli()
