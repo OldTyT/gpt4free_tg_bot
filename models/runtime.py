@@ -1,7 +1,7 @@
 from datetime import datetime
 from redis import Redis
 from rq import Queue
-from pydantic import BaseSettings, SecretStr
+from pydantic import BaseSettings
 
 
 class RuntimeSettings(BaseSettings):

@@ -1,7 +1,6 @@
 import os
-import asyncio
-import logging
-import logger
+import logging  # noqa F401
+import logger  # noqa F401
 from datetime import datetime, timezone
 
 from aiogram import Bot, Dispatcher, types
@@ -22,10 +21,10 @@ pm = ProxyMessage()
 
 
 redis_conn = Redis(
-    host = str(os.getenv("REDIS_HOST", "localhost")),
-    password = SecretStr(os.getenv("REDIS_AUTH", "")),
-    port = int(os.getenv("REDIS_PORT", 6379)),
-    db = int(os.getenv("REDIS_DATABASE", 0))
+    host=str(os.getenv("REDIS_HOST", "localhost")),
+    password=SecretStr(os.getenv("REDIS_AUTH", "")),
+    port=int(os.getenv("REDIS_PORT", 6379)),
+    db=int(os.getenv("REDIS_DATABASE", 0))
 )
 
 state_cfg = RuntimeSettings(
@@ -38,7 +37,7 @@ state_cfg = RuntimeSettings(
 
 def prompt_gpt4_start(prompt, chat_id):
     my_logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
-    gpt4_prompt_job = state_cfg.rq_queue.enqueue(
+    state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
         chat_id=chat_id,
         prompt=prompt,

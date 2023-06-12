@@ -1,13 +1,7 @@
-import json
-import time
-from typing import Callable, List
-
-from redis import Redis
-from pydantic import AnyUrl, SecretStr
-
 from clients.GPTGenerate import GPT4TextGenerate
 
-from logger import logger
+from logger import logger  # noqa: F401
+
 
 class FailedGenerateTextWithGPTModel(Exception):
     pass
