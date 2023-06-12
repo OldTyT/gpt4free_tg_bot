@@ -10,7 +10,12 @@ ENV REDIS_HOST="redis"\
     TELEGRAM_BOT_TOKEN="TELEGRAM_BOT_TOKEN" \
     PROGRAM_TYPE="worker" \
     LOG_LEVEL="INFO" \
-    MAX_NUM_WORKERS="10"
+    MAX_NUM_WORKERS="10" \
+    POSTGRES_USER="postgres" \
+    POSTGRES_PASSWORD="passwd" \
+    POSTGRES_HOST="postgres" \
+    POSTGRES_PORT="5432" \
+    POSTGRES_DB="postgres"
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y gcc g++ && \
