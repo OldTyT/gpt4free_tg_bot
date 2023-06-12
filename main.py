@@ -8,7 +8,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from redis import Redis
 from pydantic import SecretStr
-from rq import Queue
+from rq import Queue, Retry
 
 from models.runtime import RuntimeSettings
 from jobs import GenerateTextWithGPTModel
@@ -38,7 +38,8 @@ def prompt_gpt4_start(prompt, chat_id):
         chat_id=chat_id,
         prompt=prompt,
         tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
-        result_ttl=3600
+        result_ttl=3600,
+        retry=Retry(max=3, interval=[3, 5, 7])
     )
 
 

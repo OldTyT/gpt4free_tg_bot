@@ -18,8 +18,7 @@ def start_rq_worker():
         )
         with Connection(connection=redis_conn):
             qs = sys.argv[1:] or 'fast_gpt4_bot_queue'
-            w = Worker(qs)
-            w.work()
+            Worker(qs).work(burst=True)
     except Exception as e:
         logger.error("Fatal error: {}".format(e))
         sys.exit(1)
