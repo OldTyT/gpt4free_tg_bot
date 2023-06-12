@@ -33,6 +33,7 @@ state_cfg = RuntimeSettings(
 
 
 def prompt_gpt4_start(prompt, chat_id):
+    logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
     gpt4_prompt_job = state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
         chat_id=chat_id,
@@ -49,6 +50,11 @@ async def process_start_command(message: types.Message):
                 "\n" \
                 "Ask me something. Or use cmd `/gen <something>`."
     await message.answer(msg_start, parse_mode="Markdown")
+
+
+@dp.message_handler(commands=['ping'])
+async def message_ping_cmd(message: types.Message):
+    await message.answer("pong")
 
 
 @dp.message_handler(commands=['gen'])

@@ -26,10 +26,9 @@ class GPT4TextGenerate(BaseSettings):
         Thread(target=set_is_typing, args=(chat_id,tg_bot_token)).start()
         try:
             Thread(target=set_is_typing, args=(chat_id, tg_bot_token)).start()
-            result_generate = self.gpt4_generate(prompt=prompt)
+            result_generate = self.gpt4_generate(prompt=prompt, chat_id=chat_id, tg_bot_token=tg_bot_token)
             if result_generate:
                 STOP_TYPING=True
-                self.send_message(result_generate, chat_id, tg_bot_token)
                 return True
         except:
             logger.warning("Smth error in message_responser")
@@ -37,8 +36,21 @@ class GPT4TextGenerate(BaseSettings):
         self.send_message("Smth error", chat_id, tg_bot_token)
 
 
-    def gpt4_generate(self, prompt):
-        return g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=False, provider=g4f.Provider.Forefront)
+    def gpt4_generate(self, chat_id, tg_bot_token, prompt):
+        bot = telebot.TeleBot(tg_bot_token.get_secret_value())
+        msg_id = bot.send_message(chat_id, 'Wait please...', parse_mode='Markdown').message_id
+        response = g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=True, provider=g4f.Provider.Forefront)
+        full_text = ""
+        max_length = 150
+        number_divisions = 1
+        for i in response:
+            full_text += i
+            if len(full_text) / (max_length * number_divisions) > 1:
+                number_divisions += 1
+                bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
+            bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
+            return True
+        return False
 
 
     def send_message(self, text, chat_id, tg_bot_token):
