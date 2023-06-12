@@ -67,7 +67,7 @@ async def message_ping_cmd(message: types.Message):
 async def message_gen_cmd(message: types.Message):
     if pm.check(message):
         if len(message.text) < 5:
-            await message.answer(f"The text is very short.")
+            await message.answer("The text is very short.")
             return
         prompt_gpt4_start(
             prompt=message.text[5:],  # remove '/gen ' from msg
