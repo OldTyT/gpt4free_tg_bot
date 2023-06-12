@@ -37,16 +37,15 @@ state_cfg = RuntimeSettings(
 
 
 def prompt_gpt4_start(prompt, chat_id):
-    if pm.check(message):
-        my_logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
-        gpt4_prompt_job = state_cfg.rq_queue.enqueue(
-            GenerateTextWithGPTModel,
-            chat_id=chat_id,
-            prompt=prompt,
-            tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
-            job_timeout=120,
-            retry=Retry(max=3)
-        )
+    my_logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
+    gpt4_prompt_job = state_cfg.rq_queue.enqueue(
+        GenerateTextWithGPTModel,
+        chat_id=chat_id,
+        prompt=prompt,
+        tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
+        job_timeout=120,
+        retry=Retry(max=3)
+    )
 
 
 @dp.message_handler(commands=['start'])
