@@ -11,6 +11,7 @@ class GPT4TextGenerate(BaseSettings):
         for i in range(retry):
             logger.debug(f"Retry is {i+1}/{retry} on create GPT4 text response.")
             try:
+                self.set_is_typing(chat_id, tg_bot_token)
                 result_generate = self.gpt4_generate(prompt=prompt)
                 if result_generate:
                     self.send_message(result_generate, chat_id, tg_bot_token)
@@ -19,6 +20,12 @@ class GPT4TextGenerate(BaseSettings):
                 logger.warning("Smth error in message_responser")
             sleep(7)
         self.send_message("Smth error", chat_id, tg_bot_token)
+
+
+    def set_is_typing(self, chat_id, tg_bot_token):
+        bot = telebot.TeleBot(tg_bot_token.get_secret_value())
+        bot.send_chat_action(chat_id, action="typing")
+
 
     def gpt4_generate(self, prompt):
         return g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=False, provider=g4f.Provider.Forefront)

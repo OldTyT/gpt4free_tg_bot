@@ -44,7 +44,10 @@ def prompt_gpt4_start(prompt, chat_id):
 
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
-    await message.answer("Hello! I'm GPT 4 language model.")
+    msg_start = "GPT4 FastBot\n" \
+                "\n" \
+                "Ask me something. Or use cmd `/gen <something>`."
+    await message.answer(msg_start, parse_mode="Markdown")
 
 
 @dp.message_handler(commands=['gen'])
@@ -56,13 +59,11 @@ async def message_gen_cmd(message: types.Message):
         prompt=message.text[5:],  # remove '/gen ' from msg
         chat_id=message.chat.id
     )
-    await message.answer(f"Wait please...")
 
 
 @dp.message_handler()
 async def all_message_handler(message: types.Message):
     prompt_gpt4_start(prompt=message.text, chat_id=message.from_user.id)
-    await message.answer(f"Wait please...")
 
 
 if __name__ == '__main__':
