@@ -20,5 +20,5 @@ def GenerateTextWithGPTModel(
     result = gpt4.message_responser(prompt=prompt, chat_id=chat_id, tg_bot_token=tg_bot_token)
     if result:
         return result
-    else:
-        raise FailedGenerateTextWithGPTModel
+    # else:
+    #     raise FailedGenerateTextWithGPTModel

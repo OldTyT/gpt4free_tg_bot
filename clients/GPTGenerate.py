@@ -16,6 +16,7 @@ def set_is_typing(chat_id, tg_bot_token):
     while True:
         if STOP_TYPING:
             return
+        logger.debug(f"STOP_TYPING is False. Seting status typing. Chat id: {chat_id}")
         bot.send_chat_action(chat_id, action="typing")
         time.sleep(4)
 
@@ -36,15 +37,16 @@ class GPT4TextGenerate(BaseSettings):
     def message_responser(self, prompt, chat_id, tg_bot_token):
         Thread(target=set_is_typing, args=(chat_id,tg_bot_token)).start()
         try:
-            Thread(target=set_is_typing, args=(chat_id, tg_bot_token)).start()
             result_generate = self.gpt4_generate(prompt=prompt, chat_id=chat_id, tg_bot_token=tg_bot_token)
             if result_generate:
                 STOP_TYPING=True
+                logger.debug(f"Result sent successful for chat id: {chat_id}")
                 return True
         except:
             logger.warning("Smth error in message_responser")
         STOP_TYPING=True
         self.send_message("Smth error", chat_id, tg_bot_token)
+        return False
 
 
     def gpt4_generate(self, chat_id, tg_bot_token, prompt):
@@ -62,6 +64,7 @@ class GPT4TextGenerate(BaseSettings):
             if get_full_len_list(full_text) / (max_length * number_divisions) > 1:
                 number_divisions += 1
                 if get_full_len_list(full_text) / ((4096 - max_length) * cnt_divisions) >= 1:
+                    logger.debug("Len message to long. Send new message.")
                     msg_id = self.send_message(text=get_str_from_list(full_text[last_len_list:]), chat_id=chat_id, tg_bot_token=tg_bot_token)
                     len_list = len(full_text)
                     cnt_divisions += 1

@@ -40,8 +40,8 @@ def prompt_gpt4_start(prompt, chat_id):
         chat_id=chat_id,
         prompt=prompt,
         tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
-        result_ttl=3600,
-        retry=Retry(max=3, interval=[3, 5, 7])
+        job_timeout=120,
+        retry=Retry(max=3)
     )
 
 
