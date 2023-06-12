@@ -9,7 +9,7 @@ from aiogram.utils import executor
 from redis import Redis
 from pydantic import SecretStr
 from rq import Queue, Retry
-from loguru import my_logger
+from loguru import logger as my_logger
 
 from models.runtime import RuntimeSettings
 from jobs import GenerateTextWithGPTModel
