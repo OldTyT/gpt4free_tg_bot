@@ -1,5 +1,5 @@
 ---
-name: Test run
+name: General CI
 on:
   push:
   pull_request:
@@ -19,6 +19,7 @@ jobs:
       - name: flake8 Lint
         uses: py-actions/flake8@v2
   build:
+    needs: [flake8-lint]
     name: Build & Push
     runs-on: ubuntu-latest
     env:

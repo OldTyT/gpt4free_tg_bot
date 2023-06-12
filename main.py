@@ -2,19 +2,22 @@ import os
 import logging  # noqa F401
 import logger  # noqa F401
 from datetime import datetime, timezone
+import asyncio
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from redis import Redis
 from pydantic import SecretStr
 from rq import Queue, Retry
 from loguru import logger as my_logger
+from db.base import get_session
 
 from models.runtime import RuntimeSettings
 from jobs import GenerateTextWithGPTModel
 from proxy import ProxyMessage
 
-
+logging.getLogger().setLevel(logging.DEBUG)
 bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
 dp = Dispatcher(bot)
 pm = ProxyMessage()
@@ -49,23 +52,22 @@ def prompt_gpt4_start(prompt, chat_id):
 
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
-    if pm.check(message):
+    if await pm.check(message):
         msg_start = "GPT4 FastBot\n" \
                     "\n" \
                     "Ask me something. Or use cmd `/gen <something>`."
-        my_logger.debug(f"Starting for chat id: {message.chat.id}")
         await message.answer(msg_start, parse_mode="Markdown")
 
 
 @dp.message_handler(commands=['ping'])
 async def message_ping_cmd(message: types.Message):
-    if pm.check(message):
+    if await pm.check(message):
         await message.answer("pong")
 
 
 @dp.message_handler(commands=['gen'])
 async def message_gen_cmd(message: types.Message):
-    if pm.check(message):
+    if await pm.check(message):
         if len(message.text) < 5:
             await message.answer("The text is very short.")
             return
@@ -77,7 +79,7 @@ async def message_gen_cmd(message: types.Message):
 
 @dp.message_handler()
 async def all_message_handler(message: types.Message):
-    if pm.check(message):
+    if await pm.check(message):
         prompt_gpt4_start(prompt=message.text, chat_id=message.from_user.id)
 
 

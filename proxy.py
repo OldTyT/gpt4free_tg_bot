@@ -1,7 +1,24 @@
+import json
+
+from sqlalchemy.ext.asyncio import AsyncSession
+import jsonpickle
+
 from loguru import logger
+from models.users import Users
+from models.history import MessageHistory
+from db.base import get_session
 
 
 class ProxyMessage:
-    def check(self, message):
+    async def check(self, message):
+        session = [session_q async for session_q in get_session()][0]
         logger.debug(message)
-        return True
+        message_h = MessageHistory(message=json.loads(jsonpickle.encode(message)))
+        session.add(message_h)
+        try:
+            await session.commit()
+            return True
+        except Exception as ex:
+            await session.rollback()
+            logger.error(ex)
+            return False
