@@ -1,11 +1,16 @@
 import os
 import sys
+import multiprocessing
 
 from rq import Connection, Worker
 from redis import Redis
 from pydantic import SecretStr
 
 from logger import logger
+
+
+def num_workers_needed():
+    return int(os.getenv("MAX_NUM_WORKERS"))
 
 
 def start_rq_worker():
@@ -18,7 +23,8 @@ def start_rq_worker():
         )
         with Connection(connection=redis_conn):
             qs = sys.argv[1:] or 'fast_gpt4_bot_queue'
-            Worker(qs).work(burst=True)
+            for i in range(num_workers_needed()):
+                multiprocessing.Process(target=Worker(qs).work, kwargs={'burst': False}).start()
     except Exception as e:
         logger.error("Fatal error: {}".format(e))
         sys.exit(1)

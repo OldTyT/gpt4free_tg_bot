@@ -9,7 +9,8 @@ ENV REDIS_HOST="redis"\
     REDIS_DATABASE="0" \
     TELEGRAM_BOT_TOKEN="TELEGRAM_BOT_TOKEN" \
     PROGRAM_TYPE="worker" \
-    LOG_LEVEL="INFO"
+    LOG_LEVEL="INFO" \
+    MAX_NUM_WORKERS="10"
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y gcc g++ && \
