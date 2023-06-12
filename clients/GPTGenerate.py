@@ -48,9 +48,8 @@ class GPT4TextGenerate(BaseSettings):
             if len(full_text) / (max_length * number_divisions) > 1:
                 number_divisions += 1
                 bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
-            bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
-            return True
-        return False
+        bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
+        return True
 
 
     def send_message(self, text, chat_id, tg_bot_token):
