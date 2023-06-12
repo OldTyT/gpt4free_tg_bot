@@ -20,6 +20,17 @@ def set_is_typing(chat_id, tg_bot_token):
         time.sleep(4)
 
 
+def get_full_len_list(my_list: list):
+    cnt = 0
+    for i in my_list:
+        cnt += len(i)
+    return cnt
+
+
+def get_str_from_list(my_list: list):
+    return ''.join(str(x) for x in my_list)
+
+
 class GPT4TextGenerate(BaseSettings):
 
     def message_responser(self, prompt, chat_id, tg_bot_token):
@@ -40,15 +51,24 @@ class GPT4TextGenerate(BaseSettings):
         bot = telebot.TeleBot(tg_bot_token.get_secret_value())
         msg_id = bot.send_message(chat_id, 'Wait please...', parse_mode='Markdown').message_id
         response = g4f.ChatCompletion.create(model='gpt-4', messages=[{"role": "user", "content": prompt}], stream=True, provider=g4f.Provider.Forefront)
-        full_text = ""
+        full_text = []
         max_length = 150
         number_divisions = 1
+        cnt_divisions = 1
+        len_list = 0
+        last_len_list = 0
         for i in response:
-            full_text += i
-            if len(full_text) / (max_length * number_divisions) > 1:
+            full_text.append(i)
+            if get_full_len_list(full_text) / (max_length * number_divisions) > 1:
                 number_divisions += 1
-                bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
-        bot.edit_message_text(chat_id=chat_id, text=full_text, message_id=msg_id)
+                if get_full_len_list(full_text) / ((4096 - max_length) * cnt_divisions) >= 1:
+                    msg_id = self.send_message(text=get_str_from_list(full_text[last_len_list:]), chat_id=chat_id, tg_bot_token=tg_bot_token)
+                    len_list = len(full_text)
+                    cnt_divisions += 1
+                else:
+                    bot.edit_message_text(chat_id=chat_id, text=get_str_from_list(full_text[len_list:]), message_id=msg_id)
+                    last_len_list = len(full_text)
+        bot.edit_message_text(chat_id=chat_id, text=get_str_from_list(full_text[len_list:]), message_id=msg_id)
         return True
 
 
@@ -56,6 +76,7 @@ class GPT4TextGenerate(BaseSettings):
         bot = telebot.TeleBot(tg_bot_token.get_secret_value())
         max_length = 4096
         chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
+        msg_id = 0
         for chunk in chunks:
-            bot.send_message(chat_id, chunk, parse_mode='Markdown')
-        return True
+            msg_id = bot.send_message(chat_id, chunk, parse_mode='Markdown').message_id
+        return msg_id
