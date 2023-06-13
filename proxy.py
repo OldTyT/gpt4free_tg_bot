@@ -13,7 +13,7 @@ class ProxyMessage:
         session = [session_q async for session_q in get_session()][0]
         user = await session.execute(select(Users).where(Users.user_id == message.from_user.id))
         user = user.scalars().all()
-        if not(user):
+        if not user:
             user = Users(
                 user_id=message.from_user.id,
                 first_name=message.from_user.first_name,
