@@ -3,13 +3,12 @@ from datetime import datetime, timezone
 
 from redis import Redis
 from rq import Queue
-from pydantic import BaseSettings
 from pydantic import SecretStr
 
 from models.runtime import RuntimeSettings
 
 
-class GlobalConfigs(BaseSettings):
+class GlobalConfigs:
     redis_conn = Redis(
         host=str(os.getenv("REDIS_HOST", "localhost")),
         password=SecretStr(os.getenv("REDIS_AUTH", "")),
@@ -22,4 +21,4 @@ class GlobalConfigs(BaseSettings):
         started_at=datetime.now(timezone.utc),
         last_update=datetime.fromtimestamp(0)
     )
-    telegram_token_bot: SecretStr = os.getenv("TELEGRAM_BOT_TOKEN")
+    telegram_token_bot = SecretStr(os.getenv("TELEGRAM_BOT_TOKEN"))

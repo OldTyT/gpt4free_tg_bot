@@ -41,8 +41,7 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(commands=['ping'])
 async def message_ping_cmd(message: types.Message):
-    if await pm.check(message):
-        await message.answer("pong")
+    await message.answer("pong")
 
 
 @dp.message_handler(commands=['gen'])

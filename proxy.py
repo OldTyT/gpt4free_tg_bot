@@ -4,7 +4,7 @@ from rq import Retry
 from loguru import logger
 from models.users import Users  # noqa: F401
 from db.base import get_session
-from models.cofigs import GlobalConfigs
+from models.configs import GlobalConfigs
 from jobs import SaveMessage
 
 cfg = GlobalConfigs()
