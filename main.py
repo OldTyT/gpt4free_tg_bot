@@ -1,47 +1,29 @@
-import os
 import logging  # noqa F401
 import logger  # noqa F401
-from datetime import datetime, timezone
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
-from redis import Redis
-from pydantic import SecretStr
-from rq import Queue, Retry
+from rq import Retry
 from loguru import logger as my_logger
 
-from models.runtime import RuntimeSettings
+from models.configs import GlobalConfigs
 from jobs import GenerateTextWithGPTModel
 from proxy import ProxyMessage
 
 logging.getLogger().setLevel(logging.DEBUG)
-bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
+cfg = GlobalConfigs()
+bot = Bot(token=cfg.telegram_token_bot.get_secret_value())
 dp = Dispatcher(bot)
 pm = ProxyMessage()
 
 
-redis_conn = Redis(
-    host=str(os.getenv("REDIS_HOST", "localhost")),
-    password=SecretStr(os.getenv("REDIS_AUTH", "")),
-    port=int(os.getenv("REDIS_PORT", 6379)),
-    db=int(os.getenv("REDIS_DATABASE", 0))
-)
-
-state_cfg = RuntimeSettings(
-    redis_conn=redis_conn,
-    rq_queue=Queue(os.getenv("REDIS_QUEUE", "fast_gpt4_bot_queue"), connection=redis_conn),
-    started_at=datetime.now(timezone.utc),
-    last_update=datetime.fromtimestamp(0)
-)
-
-
 def prompt_gpt4_start(prompt, chat_id):
     my_logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
-    state_cfg.rq_queue.enqueue(
+    cfg.state_cfg.rq_queue.enqueue(
         GenerateTextWithGPTModel,
         chat_id=chat_id,
         prompt=prompt,
-        tg_bot_token=SecretStr(os.getenv("TELEGRAM_BOT_TOKEN")),
+        tg_bot_token=cfg.telegram_token_bot,
         job_timeout=120,
         retry=Retry(max=3)
     )

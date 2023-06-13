@@ -4,8 +4,10 @@ from rq import Retry
 from loguru import logger
 from models.users import Users  # noqa: F401
 from db.base import get_session
-from main import state_cfg
+from models.cofigs import GlobalConfigs
 from jobs import SaveMessage
+
+cfg = GlobalConfigs()
 
 
 class ProxyMessage:
@@ -31,7 +33,7 @@ class ProxyMessage:
         return True
 
     async def check(self, message):
-        state_cfg.rq_queue.enqueue(
+        cfg.state_cfg.rq_queue.enqueue(
             SaveMessage,
             message=message,
             job_timeout=120,
