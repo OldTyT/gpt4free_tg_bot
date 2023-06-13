@@ -1,13 +1,32 @@
+from datetime import datetime, timezone
+
 from sqlalchemy import select
 from rq import Retry
+from rq import Queue
+from redis import Redis
 
 from loguru import logger
 from models.users import Users  # noqa: F401
 from db.base import get_session
 from models.configs import GlobalConfigs
 from jobs import SaveMessage
+from models.runtime import RuntimeSettings
 
 cfg = GlobalConfigs()
+
+redis_conn = Redis(
+    host=cfg.redis_host,
+    password=cfg.redis_password.get_secret_value(),
+    port=cfg.redis_port,
+    db=cfg.redis_db
+)
+
+state_cfg = RuntimeSettings(
+    redis_conn=redis_conn,
+    rq_queue=Queue("fast_gpt4_bot_queue", connection=redis_conn),
+    started_at=datetime.now(timezone.utc),
+    last_update=datetime.fromtimestamp(0)
+)
 
 
 class ProxyMessage:
@@ -33,9 +52,9 @@ class ProxyMessage:
         return True
 
     async def check(self, message):
-        cfg.state_cfg.rq_queue.enqueue(
+        state_cfg.rq_queue.enqueue(
             SaveMessage,
-            message=message,
+            message=str(message),
             job_timeout=120,
             retry=Retry(max=3)
         )

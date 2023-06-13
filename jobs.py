@@ -9,10 +9,15 @@ class FailedGenerateTextWithGPTModel(Exception):
 
 
 def GenerateTextWithGPTModel(
-    chat_id, prompt, tg_bot_token
+    chat_id, prompt, tg_bot_token, msg_id
 ) -> bool:
     gpt4 = GPT4TextGenerate()
-    result = gpt4.message_responser(prompt=prompt, chat_id=chat_id, tg_bot_token=tg_bot_token)
+    result = gpt4.message_responser(
+        prompt=prompt,
+        chat_id=chat_id,
+        tg_bot_token=tg_bot_token,
+        msg_id=msg_id
+    )
     if result:
         return result
     else:

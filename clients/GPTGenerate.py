@@ -34,10 +34,15 @@ def get_str_from_list(my_list: list):
 
 class GPT4TextGenerate(BaseSettings):
 
-    def message_responser(self, prompt, chat_id, tg_bot_token):
+    def message_responser(self, prompt, chat_id, tg_bot_token, msg_id):
         Thread(target=set_is_typing, args=(chat_id, tg_bot_token)).start()
         try:
-            result_generate = self.gpt4_generate(prompt=prompt, chat_id=chat_id, tg_bot_token=tg_bot_token)
+            result_generate = self.gpt4_generate(
+                prompt=prompt,
+                chat_id=chat_id,
+                tg_bot_token=tg_bot_token,
+                msg_id=msg_id
+            )
             if result_generate:
                 STOP_TYPING = True
                 logger.debug(f"Result sent successful for chat id: {chat_id}")
@@ -48,9 +53,10 @@ class GPT4TextGenerate(BaseSettings):
         self.send_message("Smth error", chat_id, tg_bot_token)
         return False
 
-    def gpt4_generate(self, chat_id, tg_bot_token, prompt):
+    def gpt4_generate(self, chat_id, tg_bot_token, prompt, msg_id):
         bot = telebot.TeleBot(tg_bot_token.get_secret_value())
-        msg_id = bot.send_message(chat_id, 'Wait please...', parse_mode='Markdown').message_id
+        if msg_id == 0:
+            msg_id = bot.send_message(chat_id, 'Wait please...', parse_mode='Markdown').message_id
         response = g4f.ChatCompletion.create(
             model='gpt-4',
             messages=[{"role": "user", "content": prompt}],
