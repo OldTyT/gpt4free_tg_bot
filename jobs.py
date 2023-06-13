@@ -1,4 +1,5 @@
 from clients.GPTGenerate import GPT4TextGenerate
+from clients.middleware import MessagesSaver
 
 from logger import logger  # noqa: F401
 
@@ -14,5 +15,15 @@ def GenerateTextWithGPTModel(
     result = gpt4.message_responser(prompt=prompt, chat_id=chat_id, tg_bot_token=tg_bot_token)
     if result:
         return result
-    # else:
+    else:
+        return False
     #     raise FailedGenerateTextWithGPTModel
+
+
+def SaveMessage(message):
+    saver = MessagesSaver()
+    result = saver.save_msg(message=message)
+    if result:
+        return result
+    else:
+        return False

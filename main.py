@@ -49,11 +49,12 @@ def prompt_gpt4_start(prompt, chat_id):
 
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
-    if await pm.check(message):
-        msg_start = "GPT4 FastBot\n" \
-                    "\n" \
-                    "Ask me something. Or use cmd `/gen <something>`."
-        await message.answer(msg_start, parse_mode="Markdown")
+    if await pm.cmd_start(message):
+        if await pm.check(message):
+            msg_start = "GPT4 FastBot\n" \
+                        "\n" \
+                        "Ask me something. Or use cmd `/gen <something>`."
+            await message.answer(msg_start, parse_mode="Markdown")
 
 
 @dp.message_handler(commands=['ping'])
