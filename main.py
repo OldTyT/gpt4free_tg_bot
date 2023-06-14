@@ -114,11 +114,11 @@ async def inline_general_handler(inline_query: InlineQuery):
     )
     item = InlineQueryResultArticle(
             id=1,
-            description=f'Send message for generate text from this prompt.',
+            description='Send message for generate text from this prompt.',
             title=prompt,
             reply_markup=prompt_kb,
             input_message_content=InputTextMessageContent(
-                f'Please click on the button.',
+                'Please click on the button.',
                 parse_mode=types.ParseMode.HTML
             )
     )
