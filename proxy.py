@@ -9,7 +9,7 @@ from loguru import logger
 from models.users import Users  # noqa: F401
 from db.base import get_session
 from models.configs import GlobalConfigs
-from jobs import SaveMessage
+from jobs import SaveMessage, SaveCallbackQuery
 from models.runtime import RuntimeSettings
 
 cfg = GlobalConfigs()
@@ -27,6 +27,17 @@ state_cfg = RuntimeSettings(
     started_at=datetime.now(timezone.utc),
     last_update=datetime.fromtimestamp(0)
 )
+
+
+class ProxyCallbackQuery:
+    async def check(self, callback_query):
+        state_cfg.rq_queue.enqueue(
+            SaveCallbackQuery,
+            callback_query=str(callback_query),
+            job_timeout=120,
+            retry=Retry(max=3)
+        )
+        return True
 
 
 class ProxyMessage:

@@ -10,3 +10,10 @@ class MessageHistory(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
     message = Column(JSON)
+
+
+class CallbackQueryHistory(Base):
+    __tablename__ = "callback_query_history"
+
+    id = Column(Integer, autoincrement=True, primary_key=True, index=True)
+    callback_query = Column(JSON)

@@ -1,6 +1,6 @@
 import os
 import sys
-import multiprocessing
+# import multiprocessing
 
 from rq import Connection, Worker
 from redis import Redis
@@ -10,7 +10,7 @@ from logger import logger
 
 
 def num_workers_needed():
-    return int(os.getenv("MAX_NUM_WORKERS"))
+    return int(os.getenv("MAX_NUM_WORKERS", 1))
 
 
 def start_rq_worker():
@@ -23,8 +23,9 @@ def start_rq_worker():
         )
         with Connection(connection=redis_conn):
             qs = sys.argv[1:] or 'fast_gpt4_bot_queue'
-            for i in range(num_workers_needed()):
-                multiprocessing.Process(target=Worker(qs).work, kwargs={'burst': False}).start()
+            Worker(qs).work()
+            # for i in range(num_workers_needed()):
+            #     multiprocessing.Process(target=Worker(qs).work, kwargs={'burst': False}).start()
     except Exception as e:
         logger.error("Fatal error: {}".format(e))
         sys.exit(1)

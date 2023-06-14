@@ -1,5 +1,5 @@
 from clients.GPTGenerate import GPT4TextGenerate
-from clients.middleware import MessagesSaver
+from clients.middleware import MessagesSaver, CallbackQuerySaver
 
 from logger import logger  # noqa: F401
 
@@ -28,6 +28,15 @@ def GenerateTextWithGPTModel(
 def SaveMessage(message):
     saver = MessagesSaver()
     result = saver.save_msg(message=message)
+    if result:
+        return result
+    else:
+        return False
+
+
+def SaveCallbackQuery(callback_query):
+    saver = CallbackQuerySaver()
+    result = saver.save_cq(callback_query=callback_query)
     if result:
         return result
     else:

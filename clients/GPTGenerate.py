@@ -35,7 +35,8 @@ def get_str_from_list(my_list: list):
 class GPT4TextGenerate(BaseSettings):
 
     def message_responser(self, prompt, chat_id, tg_bot_token, msg_id):
-        Thread(target=set_is_typing, args=(chat_id, tg_bot_token)).start()
+        if chat_id != 0:
+            Thread(target=set_is_typing, args=(chat_id, tg_bot_token)).start()
         try:
             result_generate = self.gpt4_generate(
                 prompt=prompt,
@@ -55,7 +56,7 @@ class GPT4TextGenerate(BaseSettings):
 
     def gpt4_generate(self, chat_id, tg_bot_token, prompt, msg_id):
         bot = telebot.TeleBot(tg_bot_token.get_secret_value())
-        if msg_id == 0:
+        if chat_id != 0:
             msg_id = bot.send_message(chat_id, 'Wait please...', parse_mode='Markdown').message_id
         response = g4f.ChatCompletion.create(
             model='gpt-4',
@@ -75,21 +76,47 @@ class GPT4TextGenerate(BaseSettings):
                 number_divisions += 1
                 if get_full_len_list(full_text) / ((4096 - max_length) * cnt_divisions) >= 1:
                     logger.debug("Len message to long. Send new message.")
+                    if chat_id == 0:
+                        return True
                     msg_id = self.send_message(
                         text=get_str_from_list(full_text[last_len_list:]),
                         chat_id=chat_id,
-                        tg_bot_token=tg_bot_token
+                        tg_bot_token=tg_bot_token,
+                        parse_mode='Markdown'
                     )
                     len_list = len(full_text)
                     cnt_divisions += 1
                 else:
-                    bot.edit_message_text(
-                        chat_id=chat_id,
-                        text=get_str_from_list(full_text[len_list:]),
-                        message_id=msg_id
-                    )
-                    last_len_list = len(full_text)
-        bot.edit_message_text(chat_id=chat_id, text=get_str_from_list(full_text[len_list:]), message_id=msg_id)
+                    if chat_id != 0:
+                        bot.edit_message_text(
+                            chat_id=chat_id,
+                            text=get_str_from_list(full_text[len_list:]),
+                            message_id=msg_id,
+                            parse_mode='Markdown'
+                        )
+                        last_len_list = len(full_text)
+                    if chat_id == 0:
+                        bot.edit_message_text(
+                            inline_message_id=msg_id,
+                            text=get_str_from_list(full_text[len_list:]),
+                            parse_mode='Markdown'
+                        )
+        try:
+            if chat_id == 0:
+                bot.edit_message_text(
+                    inline_message_id=msg_id,
+                    text=get_str_from_list(full_text[len_list:]),
+                    parse_mode='Markdown'
+                )
+            bot.edit_message_text(
+                chat_id=chat_id,
+                text=get_str_from_list(full_text[len_list:]),
+                message_id=msg_id,
+                parse_mode='Markdown'
+            )
+        except telebot.apihelper.ApiTelegramException as e:
+            if e == "A request to the Telegram API was unsuccessful. Error code: 400. Description: Bad Request: message identifier is not specified":  # noqa E501
+                return True
         return True
 
     def send_message(self, text, chat_id, tg_bot_token):
@@ -98,5 +125,7 @@ class GPT4TextGenerate(BaseSettings):
         chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
         msg_id = 0
         for chunk in chunks:
+            if chat_id == 0:
+                return True
             msg_id = bot.send_message(chat_id, chunk, parse_mode='Markdown').message_id
         return msg_id
