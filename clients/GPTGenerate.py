@@ -56,8 +56,6 @@ class GPT4TextGenerate(BaseSettings):
 
     def gpt4_generate(self, chat_id, tg_bot_token, prompt, msg_id):
         bot = telebot.TeleBot(tg_bot_token.get_secret_value())
-        if chat_id != 0:
-            msg_id = bot.send_message(chat_id, 'Wait please...', parse_mode='Markdown').message_id
         response = g4f.ChatCompletion.create(
             model='gpt-4',
             messages=[{"role": "user", "content": prompt}],

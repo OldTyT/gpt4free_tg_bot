@@ -76,6 +76,9 @@ async def message_ping_cmd(message: types.Message):
 @dp.message_handler(commands=['gen'])
 async def message_gen_cmd(message: types.Message):
     if await pm.check(message):
+        if message.text.find(" ") == -1:
+            await message.answer("The text is very short.")
+            return
         prompt = message.text[message.text.find(" ")+1:]  # remove '/gen ' from msg
         if len(prompt) < 1:
             await message.answer("The text is very short.")
