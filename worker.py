@@ -23,7 +23,7 @@ def start_rq_worker():
         )
         with Connection(connection=redis_conn):
             qs = sys.argv[1:] or 'fast_gpt4_bot_queue'
-            Worker(qs).work()
+            Worker(qs).work(with_scheduler=True)
             # for i in range(num_workers_needed()):
             #     multiprocessing.Process(target=Worker(qs).work, kwargs={'burst': False}).start()
     except Exception as e:

@@ -50,7 +50,10 @@ def prompt_gpt4_start(prompt, chat_id, msg_id):
         tg_bot_token=cfg.telegram_token_bot,
         msg_id=msg_id,
         job_timeout=120,
-        retry=Retry(max=3)
+        retry=Retry(
+            max=5,
+            interval=1
+        )
     )
 
 

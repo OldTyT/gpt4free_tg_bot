@@ -35,7 +35,10 @@ class ProxyCallbackQuery:
             SaveCallbackQuery,
             callback_query=str(callback_query),
             job_timeout=120,
-            retry=Retry(max=3)
+            retry=Retry(
+                max=5,
+                interval=1
+            )
         )
         return True
 
@@ -67,6 +70,9 @@ class ProxyMessage:
             SaveMessage,
             message=str(message),
             job_timeout=120,
-            retry=Retry(max=3)
+            retry=Retry(
+                max=5,
+                interval=1
+            )
         )
         return True
