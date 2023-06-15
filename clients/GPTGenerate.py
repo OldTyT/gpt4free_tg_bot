@@ -79,8 +79,7 @@ class GPT4TextGenerate(BaseSettings):
                     msg_id = self.send_message(
                         text=get_str_from_list(full_text[last_len_list:]),
                         chat_id=chat_id,
-                        tg_bot_token=tg_bot_token,
-                        parse_mode='Markdown'
+                        tg_bot_token=tg_bot_token
                     )
                     len_list = len(full_text)
                     cnt_divisions += 1
@@ -89,15 +88,13 @@ class GPT4TextGenerate(BaseSettings):
                         bot.edit_message_text(
                             chat_id=chat_id,
                             text=get_str_from_list(full_text[len_list:]),
-                            message_id=msg_id,
-                            parse_mode='Markdown'
+                            message_id=msg_id
                         )
                         last_len_list = len(full_text)
                     if chat_id == 0:
                         bot.edit_message_text(
                             inline_message_id=msg_id,
-                            text=get_str_from_list(full_text[len_list:]),
-                            parse_mode='Markdown'
+                            text=get_str_from_list(full_text[len_list:])
                         )
         try:
             if chat_id == 0:
@@ -106,6 +103,7 @@ class GPT4TextGenerate(BaseSettings):
                     text=get_str_from_list(full_text[len_list:]),
                     parse_mode='Markdown'
                 )
+                return True
             bot.edit_message_text(
                 chat_id=chat_id,
                 text=get_str_from_list(full_text[len_list:]),
@@ -125,5 +123,5 @@ class GPT4TextGenerate(BaseSettings):
         for chunk in chunks:
             if chat_id == 0:
                 return True
-            msg_id = bot.send_message(chat_id, chunk, parse_mode='Markdown').message_id
+            msg_id = bot.send_message(chat_id, chunk).message_id
         return msg_id
