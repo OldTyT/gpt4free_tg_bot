@@ -52,7 +52,7 @@ class GPT4TextGenerate(BaseSettings):
             logger.error(f"Fatal error: {e}")
         STOP_TYPING = True  # noqa F841
         self.send_message("Smth error", chat_id, tg_bot_token)
-        return False
+        raise RuntimeError
 
     def gpt4_generate(self, chat_id, tg_bot_token, prompt, msg_id):
         bot = telebot.TeleBot(tg_bot_token.get_secret_value())
