@@ -98,6 +98,8 @@ async def message_gen_cmd(message: types.Message):
 @dp.message_handler()
 async def all_message_handler(message: types.Message):
     if await pm.check(message):
+        if message.chat.id != message.from_user.id:  # Checking if chat type is private
+            return
         msg_id = await message.answer("Wait please...")
         msg_id = msg_id.message_id
         prompt_gpt4_start(prompt=message.text, chat_id=message.chat.id, msg_id=msg_id)
