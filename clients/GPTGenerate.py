@@ -6,13 +6,15 @@ from pydantic import BaseSettings
 
 import g4f
 from logger import logger
+from models.configs import GlobalConfigs
 
 
 STOP_TYPING = False
+cfg = GlobalConfigs()
+bot = telebot.TeleBot(cfg.telegram_token_bot.get_secret_value())
 
 
-def set_is_typing(chat_id, tg_bot_token):
-    bot = telebot.TeleBot(tg_bot_token.get_secret_value())
+def set_is_typing(chat_id):
     while True:
         if STOP_TYPING:
             return
@@ -34,14 +36,13 @@ def get_str_from_list(my_list: list):
 
 class GPT4TextGenerate(BaseSettings):
 
-    def message_responser(self, prompt, chat_id, tg_bot_token, msg_id):
+    def message_responser(self, prompt, chat_id, msg_id):
         if chat_id != 0:
-            Thread(target=set_is_typing, args=(chat_id, tg_bot_token)).start()
+            Thread(target=set_is_typing, args=(chat_id,)).start()
         try:
             result_generate = self.gpt4_generate(
                 prompt=prompt,
                 chat_id=chat_id,
-                tg_bot_token=tg_bot_token,
                 msg_id=msg_id
             )
             if result_generate:
@@ -51,11 +52,10 @@ class GPT4TextGenerate(BaseSettings):
         except Exception as e:
             logger.error(f"Fatal error: {e}")
         STOP_TYPING = True  # noqa F841
-        self.send_message("Smth error", chat_id, tg_bot_token)
+        self.send_message("Smth error", chat_id)
         raise RuntimeError
 
-    def gpt4_generate(self, chat_id, tg_bot_token, prompt, msg_id):
-        bot = telebot.TeleBot(tg_bot_token.get_secret_value())
+    def gpt4_generate(self, chat_id, prompt, msg_id):
         response = g4f.ChatCompletion.create(
             model='gpt-4',
             messages=[{"role": "user", "content": prompt}],
@@ -78,8 +78,7 @@ class GPT4TextGenerate(BaseSettings):
                         return True
                     msg_id = self.send_message(
                         text=get_str_from_list(full_text[last_len_list:]),
-                        chat_id=chat_id,
-                        tg_bot_token=tg_bot_token
+                        chat_id=chat_id
                     )
                     len_list = len(full_text)
                     cnt_divisions += 1
@@ -115,8 +114,7 @@ class GPT4TextGenerate(BaseSettings):
                 return True
         return True
 
-    def send_message(self, text, chat_id, tg_bot_token):
-        bot = telebot.TeleBot(tg_bot_token.get_secret_value())
+    def send_message(self, text, chat_id):
         max_length = 4096
         chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
         msg_id = 0

@@ -13,6 +13,7 @@ class MessagesSaver(BaseSettings):
         loop = asyncio.get_event_loop()
         coroutine = self.save_message(message)
         loop.run_until_complete(coroutine)
+        return True
 
     async def save_message(self, message):
         session = [session_q async for session_q in get_session()][0]
@@ -33,6 +34,7 @@ class CallbackQuerySaver(BaseSettings):
         loop = asyncio.get_event_loop()
         coroutine = self.save_callback_query(callback_query)
         loop.run_until_complete(coroutine)
+        return True
 
     async def save_cq(self, callback_query):
         session = [session_q async for session_q in get_session()][0]

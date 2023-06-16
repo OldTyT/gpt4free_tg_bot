@@ -24,6 +24,7 @@ dp = Dispatcher(bot)
 pm = ProxyMessage()
 pcb = ProxyCallbackQuery()
 
+
 redis_conn = Redis(
     host=cfg.redis_host,
     password=cfg.redis_password.get_secret_value(),
@@ -47,7 +48,6 @@ def prompt_gpt4_start(prompt, chat_id, msg_id):
         GenerateTextWithGPTModel,
         chat_id=chat_id,
         prompt=prompt,
-        tg_bot_token=cfg.telegram_token_bot,
         msg_id=msg_id,
         job_timeout=120,
         retry=Retry(
