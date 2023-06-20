@@ -4,7 +4,7 @@ pydantic==1.10.9
 redis==4.5.5
 rq==1.15.0
 pyTelegramBotAPI==4.12.0
-browser-cookie3==0.19.0
+browser-cookie3==0.19.1
 quickjs==1.19.2
 websockets==11.0.3
 curl-cffi==0.5.6
