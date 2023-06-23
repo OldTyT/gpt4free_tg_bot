@@ -68,17 +68,23 @@ async def process_start_command(message: types.Message):
             ])
             msg_start = "Hello! I'm fastest GPT bot\n" \
                         "\n" \
-                        "Ask me something. Or use cmd `/gen <something>`."
+                        "Ask me something. Or use cmd `/gen <something>`.\n" \
+                        "Send command - `/help` for more info"
             await message.answer(msg_start, parse_mode="Markdown")
 
 
 @dp.message_handler(commands=['help'])
 async def message_help_cmd(message: types.Message):
     if await pm.check(message):
+        username = (await bot.get_me()).username
         msg_help = "*Text generate*\n" \
                    "┣`/gen <something>`\n" \
                    "┃ or use only in private messages:\n" \
                    "┗`<something>`\n" \
+                   "\n" \
+                   "*Inline mode*\n" \
+                   "┃ bot support text generate from inline mode\n" \
+                   f"┗`@{username} <something>`\n" \
                    "\n" \
                    "*Other*\n" \
                    "┗`/ping` - Pong\n"
