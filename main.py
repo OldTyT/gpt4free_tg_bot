@@ -1,3 +1,4 @@
+import random
 import logging  # noqa F401
 from datetime import datetime, timezone
 
@@ -42,6 +43,22 @@ state_cfg = RuntimeSettings(
 prompt_callback = CallbackData("prompt", "something")
 
 
+def get_rnd_prompt() -> str:
+    prompt_list = [
+        "What is the weather like?",
+        "How old is Elon Musk?",
+        "Translate 'hello' to Spanish.",
+        "What's the capital of France?",
+        "Who won the last Super Bowl?",
+        "What's the time in Tokyo?",
+        "How do I make pancakes?",
+        "What's the population of New York?",
+        "What's the price of Bitcoin?",
+        "What's the meaning of 'serendipity'"
+    ]
+    return prompt_list[random.randint(0, len(prompt_list)-1)]
+
+
 def prompt_gpt4_start(prompt, chat_id, msg_id):
     my_logger.debug(f"Setup gpt4_prompt_job. Chat id: {chat_id}. Prompt: {prompt}")
     state_cfg.rq_queue.enqueue(
@@ -68,7 +85,7 @@ async def process_start_command(message: types.Message):
             ])
             msg_start = "Hello! I'm fastest GPT bot\n" \
                         "\n" \
-                        "Ask me something. Or use cmd `/gen <something>`.\n" \
+                        f"Ask me '{get_rnd_prompt()}'. Or use cmd `/gen {get_rnd_prompt()}`.\n" \
                         "Send command - `/help` for more info"
             await message.answer(msg_start, parse_mode="Markdown")
 
@@ -78,13 +95,13 @@ async def message_help_cmd(message: types.Message):
     if await pm.check(message):
         username = (await bot.get_me()).username
         msg_help = "*Text generate*\n" \
-                   "┣`/gen <something>`\n" \
+                   f"┣`/gen {get_rnd_prompt()}`\n" \
                    "┃ or use only in private messages:\n" \
-                   "┗`<something>`\n" \
+                   f"┗`{get_rnd_prompt()}`\n" \
                    "\n" \
                    "*Inline mode*\n" \
                    "┃ bot support text generate from inline mode\n" \
-                   f"┗`@{username} <something>`\n" \
+                   f"┗`@{username} {get_rnd_prompt()}`\n" \
                    "\n" \
                    "*Other*\n" \
                    "┗`/ping` - Pong\n"
