@@ -62,13 +62,27 @@ async def process_start_command(message: types.Message):
     if await pm.cmd_start(message):
         if await pm.check(message):
             await dp.bot.set_my_commands([
-                types.BotCommand("ping", "Pong"),
                 types.BotCommand("gen", "Text generation. Ex.: /gen <something>"),
+                types.BotCommand("help", "Help"),
+                types.BotCommand("ping", "Pong")
             ])
             msg_start = "Hello! I'm fastest GPT bot\n" \
                         "\n" \
                         "Ask me something. Or use cmd `/gen <something>`."
             await message.answer(msg_start, parse_mode="Markdown")
+
+
+@dp.message_handler(commands=['help'])
+async def message_help_cmd(message: types.Message):
+    if await pm.check(message):
+        msg_help = "*Text generate*\n" \
+                   "┣`/gen <something>`\n" \
+                   "┃ or use only in private messages:\n" \
+                   "┗`<something>`\n" \
+                   "\n" \
+                   "*Other*\n" \
+                   "┗`/ping` - Pong\n"
+        await message.answer(msg_help, parse_mode="Markdown")
 
 
 @dp.message_handler(commands=['ping'])
