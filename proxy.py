@@ -1,15 +1,14 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import select
-from rq import Retry
-from rq import Queue
+from rq import Retry, Queue
 from redis import Redis
 
 from loguru import logger
 from models.users import Users  # noqa: F401
 from db.base import get_session
 from models.configs import GlobalConfigs
-from jobs import SaveMessage, SaveCallbackQuery
+from jobs import SaveMessage, SaveCallbackQuery, UpdateLastTime
 from models.runtime import RuntimeSettings
 
 cfg = GlobalConfigs()
@@ -74,5 +73,10 @@ class ProxyMessage:
                 max=5,
                 interval=1
             )
+        )
+        state_cfg.rq_queue.enqueue(
+            UpdateLastTime,
+            time=datetime.now(timezone.utc),
+            chat_id=message.chat.id
         )
         return True

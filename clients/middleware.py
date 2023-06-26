@@ -1,11 +1,43 @@
 import json
 import asyncio
 
+from sqlalchemy import select
 from pydantic import BaseSettings
 
-from models.history import MessageHistory, CallbackQueryHistory
+from models.history import MessageHistory, CallbackQueryHistory, Chats
 from db.base import get_session
 from logger import logger
+
+
+class UpdateLastTimeMessage(BaseSettings):
+    def update(self, time, chat_id: int):
+        loop = asyncio.get_event_loop()
+        coroutine = self.update_time(time, chat_id)
+        loop.run_until_complete(coroutine)
+        return True
+
+    async def update_time(self, time, chat_id: int):
+        session = [session_q async for session_q in get_session()][0]
+        chat = await session.execute(select(Chats).where(Chats.chat_id == chat_id))
+        chat = chat.scalars().first()
+        if chat:
+            chat.message_last_time = time
+            chat.message_count += 1
+        else:
+            chat = Chats(
+                chat_id=chat_id,
+                message_last_time=time,
+                message_count=1
+            )
+            session.add(chat)
+        try:
+            await session.commit()
+            return True
+        except Exception as ex:
+            await session.rollback()
+            logger.error(ex)
+            return False
+        return False
 
 
 class MessagesSaver(BaseSettings):

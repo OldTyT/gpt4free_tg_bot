@@ -1,5 +1,5 @@
 from clients.GPTGenerate import GPT4TextGenerate
-from clients.middleware import MessagesSaver, CallbackQuerySaver
+from clients.middleware import MessagesSaver, CallbackQuerySaver, UpdateLastTimeMessage
 
 from logger import logger  # noqa: F401
 
@@ -20,6 +20,15 @@ def GenerateTextWithGPTModel(chat_id, prompt, msg_id):
 def SaveMessage(message):
     saver = MessagesSaver()
     result = saver.save_msg(message=message)
+    if result:
+        return result
+    else:
+        raise RuntimeError
+
+
+def UpdateLastTime(time: int, chat_id: int):
+    updater = UpdateLastTimeMessage()
+    result = updater.update(time=time, chat_id=chat_id)
     if result:
         return result
     else:
