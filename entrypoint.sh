@@ -3,6 +3,9 @@
 if [ "$PROGRAM_TYPE" = "worker" ]; then
     python3 worker.py
 fi
+if [ "$PROGRAM_TYPE" = "notify" ]; then
+    python3 notify.py
+fi
 if [ "$PROGRAM_TYPE" = "bot" ]; then
     python3 db_init.py
     python3 main.py
