@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import DateTime
+from sqlalchemy import BigInteger
 from sqlalchemy.dialects.postgresql import JSON
 
 from db.base import Base
@@ -10,7 +11,7 @@ class Chats(Base):
     __tablename__ = "chats"
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
-    chat_id = Column(Integer, nullable=False)
+    chat_id = Column(BigInteger, nullable=False)
     message_last_time = Column(DateTime(timezone=True), nullable=False)
     message_count = Column(Integer, nullable=False)
 

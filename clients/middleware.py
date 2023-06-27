@@ -19,7 +19,6 @@ class UpdateLastTimeMessage(BaseSettings):
     async def update_time(self, time, chat_id: int):
         session = [session_q async for session_q in get_session()][0]
         chat = await session.execute(select(Chats).where(Chats.chat_id == chat_id))
-        chat = chat.scalars().first()
         if chat:
             chat.message_last_time = time
             chat.message_count += 1
