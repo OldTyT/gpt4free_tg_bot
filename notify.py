@@ -7,6 +7,7 @@ from sqlalchemy import select
 from models.configs import GlobalConfigs
 from models.history import Chats
 from db.base import get_session
+from logger import logger
 
 cfg = GlobalConfigs()
 bot = Bot(token=cfg.telegram_token_bot.get_secret_value())
