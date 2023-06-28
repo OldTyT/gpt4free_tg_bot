@@ -31,6 +31,9 @@ async def get_inactive_chats():
     chats = chats.scalars().all()
     for chat in chats:
         chats_inactive.append(chat.chat_id)
-    await send_message_inactive_chats(chats_inactive)
+        try:
+            await send_message_inactive_chats(chats_inactive)
+        except Exception as e:
+            logger.error("Fatal error: {}".format(e))
 
 main()
