@@ -24,7 +24,7 @@ async def send_message_inactive_chats(chats: list):
     for chat in chats:
         try:
             await bot.send_message(chat, cfg.inactive_message, parse_mode="Markdown")
-            logger.info(f"Successfully notify for chat_id: {c}")
+            logger.info(f"Successfully notify for chat_id: {chat}")
         except Exception as e:
             logger.error("Fatal error: {}".format(e))
 
