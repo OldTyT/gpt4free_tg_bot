@@ -22,7 +22,11 @@ def main():
 
 async def send_message_inactive_chats(chats: list):
     for chat in chats:
-        await bot.send_message(chat, cfg.inactive_message, parse_mode="Markdown")
+        try:
+            await bot.send_message(chat, cfg.inactive_message, parse_mode="Markdown")``
+            logger.info(f"Successfully notify for chat_id: {c}")
+        except Exception as e:
+            logger.error("Fatal error: {}".format(e))
 
 
 async def get_inactive_chats():
@@ -32,9 +36,6 @@ async def get_inactive_chats():
     chats = chats.scalars().all()
     for chat in chats:
         chats_inactive.append(chat.chat_id)
-        try:
-            await send_message_inactive_chats(chats_inactive)
-        except Exception as e:
-            logger.error("Fatal error: {}".format(e))
+        await send_message_inactive_chats(chats_inactive)
 
 main()
