@@ -60,7 +60,7 @@ class GPT4TextGenerate(BaseSettings):
             model='gpt-4',
             messages=[{"role": "user", "content": prompt}],
             stream=True,
-            provider=g4f.Provider.Forefront
+            provider=g4f.Provider.Bing
         )
         full_text = []
         max_length = 150

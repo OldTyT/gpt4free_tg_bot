@@ -6,7 +6,7 @@ import time
 import random
 import asyncio
 import certifi
-import requests
+from curl_cffi import requests
 import websockets
 import browser_cookie3
 
