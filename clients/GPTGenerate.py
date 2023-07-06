@@ -55,7 +55,7 @@ class GPT4TextGenerate(BaseSettings):
         self.send_message("Smth error", chat_id)
         raise RuntimeError
 
-    def gpt4_generate(self, chat_id, prompt, msg_id)
+    def gpt4_generate(self, chat_id, prompt, msg_id):
         prompt = cfg.pre_prompt + prompt
         response = g4f.ChatCompletion.create(
             model='gpt-4',
