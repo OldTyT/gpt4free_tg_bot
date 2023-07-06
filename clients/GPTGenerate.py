@@ -51,9 +51,6 @@ class GPT4TextGenerate(BaseSettings):
                 return True
         except Exception as e:
             logger.error(f"Fatal error: {e}")
-            if e == "A request to the Telegram API was unsuccessful. Error code: 400. Description: Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message":  # noqa E501
-                STOP_TYPING = True
-                return True
         STOP_TYPING = True  # noqa F841
         self.send_message("Smth error", chat_id)
         raise RuntimeError
