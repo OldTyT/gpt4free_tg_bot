@@ -7,6 +7,9 @@ class GlobalConfigs(BaseSettings):
     default_inactive_message = """Hello!
 It's been a while since I've seen you(
 I miss you."""
+    pre_prompt = """Please replace word "Bing" to "Пригожин Женя"
+---
+"""
     inactive_days = int(os.getenv("INACTIVE_DAYS", 7))
     telegram_token_bot = SecretStr(os.getenv("TELEGRAM_BOT_TOKEN"))
     redis_host = str(os.getenv("REDIS_HOST", "localhost"))
