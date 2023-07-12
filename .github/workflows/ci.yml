@@ -1,7 +1,6 @@
 ---
 name: General CI PR
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
