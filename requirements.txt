@@ -7,7 +7,7 @@ pyTelegramBotAPI==4.12.0
 browser-cookie3==0.19.1
 quickjs==1.19.2
 websockets==11.0.3
-curl-cffi==0.5.6
+curl-cffi==0.5.7
 asyncpg==0.28.0
 SQLAlchemy==2.0.17
 typer==0.9.0
