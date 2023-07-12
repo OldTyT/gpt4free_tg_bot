@@ -132,4 +132,3 @@ class GPT4TextGenerate(BaseSettings):
         except telebot.apihelper.ApiTelegramException as e:
             if e == "A request to the Telegram API was unsuccessful. Error code: 400. Description: Bad Request: message identifier is not specified":  # noqa E501
                 return msg_id
-
