@@ -91,11 +91,15 @@ class GPT4TextGenerate(BaseSettings):
                             message_id=msg_id
                         )
                         last_len_list = len(full_text)
-                    if chat_id == 0:
-                        bot.edit_message_text(
-                            inline_message_id=msg_id,
-                            text=get_str_from_list(full_text[len_list:])
-                        )
+                    try:
+                        if chat_id == 0:
+                            bot.edit_message_text(
+                                inline_message_id=msg_id,
+                                text=get_str_from_list(full_text[len_list:])
+                            )
+                    except telebot.apihelper.ApiTelegramException as e:
+                        if e != "A request to the Telegram API was unsuccessful. Error code: 400. Description: Bad Request: message identifier is not specified":  # noqa E501
+                            raise RuntimeError(e)
         try:
             if chat_id == 0:
                 bot.edit_message_text(
@@ -119,8 +123,13 @@ class GPT4TextGenerate(BaseSettings):
         max_length = 4096
         chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
         msg_id = 0
-        for chunk in chunks:
-            if chat_id == 0:
-                return True
-            msg_id = bot.send_message(chat_id, chunk).message_id
-        return msg_id
+        try:
+            for chunk in chunks:
+                if chat_id == 0:
+                    return True
+                msg_id = bot.send_message(chat_id, chunk).message_id
+            return msg_id
+        except telebot.apihelper.ApiTelegramException as e:
+            if e == "A request to the Telegram API was unsuccessful. Error code: 400. Description: Bad Request: message identifier is not specified":  # noqa E501
+                return msg_id
+
