@@ -111,14 +111,16 @@ class GPT4TextGenerate(BaseSettings):
                 bot.edit_message_text(
                     inline_message_id=msg_id,
                     text=get_str_from_list(full_text[len_list:]),
-                    parse_mode='Markdown'
+                    # parse_mode='Markdown'
+                    # Added markdown validator
                 )
                 return True
             bot.edit_message_text(
                 chat_id=chat_id,
                 text=get_str_from_list(full_text[len_list:]),
                 message_id=msg_id,
-                parse_mode='Markdown'
+                # parse_mode='Markdown'
+                # Added markdown validator
             )
         except telebot.apihelper.ApiTelegramException as e:
             if str(e) in IGNORE_ERRORS:

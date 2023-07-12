@@ -33,7 +33,7 @@ class ProxyCallbackQuery:
         state_cfg.rq_queue.enqueue(
             SaveCallbackQuery,
             callback_query=str(callback_query),
-            job_timeout=120,
+            job_timeout=10,
             retry=Retry(
                 max=5,
                 interval=1
@@ -68,7 +68,7 @@ class ProxyMessage:
         state_cfg.rq_queue.enqueue(
             SaveMessage,
             message=str(message),
-            job_timeout=120,
+            job_timeout=10,
             retry=Retry(
                 max=5,
                 interval=1
@@ -77,6 +77,11 @@ class ProxyMessage:
         state_cfg.rq_queue.enqueue(
             UpdateLastTime,
             time=datetime.now(timezone.utc),
-            chat_id=message.chat.id
+            chat_id=message.chat.id,
+            job_timeout=10,
+            retry=Retry(
+                max=5,
+                interval=1
+            )
         )
         return True

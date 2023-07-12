@@ -66,7 +66,7 @@ def prompt_gpt4_start(prompt, chat_id, msg_id):
         chat_id=chat_id,
         prompt=prompt,
         msg_id=msg_id,
-        job_timeout=120,
+        job_timeout=300,
         retry=Retry(
             max=5,
             interval=1
