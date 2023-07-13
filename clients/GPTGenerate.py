@@ -107,7 +107,6 @@ class GPT4TextGenerate(BaseSettings):
                             else:
                                 raise RuntimeError(e)
         try:
-            logger.warning(full_text)
             if len(get_str_from_list(full_text[len_list:])) > 0:
                 if chat_id == 0:
                     bot.edit_message_text(
