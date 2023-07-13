@@ -43,18 +43,18 @@ class GPT4TextGenerate(BaseSettings):
     def message_responser(self, prompt, chat_id, msg_id):
         if chat_id != 0:
             Thread(target=set_is_typing, args=(chat_id,)).start()
-        try:
-            result_generate = self.gpt4_generate(
-                prompt=prompt,
-                chat_id=chat_id,
-                msg_id=msg_id
-            )
-            if result_generate:
-                STOP_TYPING = True
-                logger.debug(f"Result sent successful for chat id: {chat_id}")
-                return True
-        except Exception as e:
-            logger.error(f"Fatal error: {e}")
+        # try:
+        result_generate = self.gpt4_generate(
+            prompt=prompt,
+            chat_id=chat_id,
+            msg_id=msg_id
+        )
+        if result_generate:
+            STOP_TYPING = True
+            logger.debug(f"Result sent successful for chat id: {chat_id}")
+            return True
+        # except Exception as e:
+        #     logger.error(f"Fatal error: {e}")
         STOP_TYPING = True  # noqa F841
         self.send_message("Smth error", chat_id)
         raise RuntimeError
@@ -62,10 +62,10 @@ class GPT4TextGenerate(BaseSettings):
     def gpt4_generate(self, chat_id, prompt, msg_id):
         prompt = cfg.pre_prompt + prompt
         response = g4f.ChatCompletion.create(
-            model='gpt-4',
+            model='gpt-3.5-turbo',
             messages=[{"role": "user", "content": prompt}],
             stream=True,
-            provider=g4f.Provider.Bing
+            provider=g4f.Provider.DeepAi
         )
         full_text = []
         max_length = 150
@@ -107,21 +107,23 @@ class GPT4TextGenerate(BaseSettings):
                             else:
                                 raise RuntimeError(e)
         try:
-            if chat_id == 0:
+            logger.warning(full_text)
+            if len(get_str_from_list(full_text[len_list:])) > 0:
+                if chat_id == 0:
+                    bot.edit_message_text(
+                        inline_message_id=msg_id,
+                        text=get_str_from_list(full_text[len_list:]),
+                        # parse_mode='Markdown'
+                        # Added markdown validator
+                    )
+                    return True
                 bot.edit_message_text(
-                    inline_message_id=msg_id,
+                    chat_id=chat_id,
                     text=get_str_from_list(full_text[len_list:]),
+                    message_id=msg_id,
                     # parse_mode='Markdown'
                     # Added markdown validator
                 )
-                return True
-            bot.edit_message_text(
-                chat_id=chat_id,
-                text=get_str_from_list(full_text[len_list:]),
-                message_id=msg_id,
-                # parse_mode='Markdown'
-                # Added markdown validator
-            )
         except telebot.apihelper.ApiTelegramException as e:
             if str(e) in IGNORE_ERRORS:
                 return True

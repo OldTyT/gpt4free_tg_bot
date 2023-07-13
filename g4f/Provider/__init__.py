@@ -1,5 +1,7 @@
 from . import Provider
 from .Providers import (
+    Ails,
+    DeepAi,
     Phind, 
     You, 
     Bing, 
