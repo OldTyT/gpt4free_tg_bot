@@ -37,5 +37,6 @@ async def get_inactive_chats():
     for chat in chats:
         chats_inactive.append(chat.chat_id)
         await send_message_inactive_chats(chats_inactive)
+    return
 
 main()
