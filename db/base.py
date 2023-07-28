@@ -9,7 +9,6 @@ from loguru import logger  # noqa: F401
 
 DATABASE_URL = f"postgresql+asyncpg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"  # noqa: E501
 
-
 engine = create_async_engine(DATABASE_URL)
 Base = declarative_base()
 async_session = sessionmaker(

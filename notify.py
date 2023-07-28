@@ -1,3 +1,4 @@
+import os
 import asyncio
 from datetime import datetime, timezone, timedelta
 
@@ -15,7 +16,7 @@ bot = Bot(token=cfg.telegram_token_bot.get_secret_value())
 
 def main():
     loop = asyncio.get_event_loop()
-    coroutine = get_inactive_chats()
+    coroutine = main_async()
     loop.run_until_complete(coroutine)
     return True
 
@@ -27,7 +28,7 @@ async def send_message_inactive_chats(chats: list):
             logger.info(f"Successfully notify for chat_id: {chat}")
         except Exception as e:
             logger.error("Fatal error: {}".format(e))
-    return
+    return True
 
 
 async def get_inactive_chats():
@@ -37,12 +38,15 @@ async def get_inactive_chats():
     chats = chats.scalars().all()
     for chat in chats:
         chats_inactive.append(chat.chat_id)
+    await session.close()
     return chats_inactive
 
 
 async def main_async():
     chats = await get_inactive_chats()
-    await send_message_inactive_chats(chats)
-    return
+    if await send_message_inactive_chats(chats):
+        return
+    else:
+        os.exit(1)
 
 main()
