@@ -27,6 +27,7 @@ async def send_message_inactive_chats(chats: list):
             logger.info(f"Successfully notify for chat_id: {chat}")
         except Exception as e:
             logger.error("Fatal error: {}".format(e))
+    return
 
 
 async def get_inactive_chats():
@@ -36,7 +37,11 @@ async def get_inactive_chats():
     chats = chats.scalars().all()
     for chat in chats:
         chats_inactive.append(chat.chat_id)
-        await send_message_inactive_chats(chats_inactive)
+    return chats_inactive
+
+async def main_async():
+    chats = await get_inactive_chats()
+    await send_message_inactive_chats(chats)
     return
 
 main()
