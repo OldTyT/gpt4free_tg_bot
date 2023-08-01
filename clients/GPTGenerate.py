@@ -62,9 +62,10 @@ class GPT4TextGenerate(BaseSettings):
     def gpt4_generate(self, chat_id, prompt, msg_id):
         prompt = cfg.pre_prompt + prompt
         response = g4f.ChatCompletion.create(
-            model='gpt-3.5-turbo',
+            # model='gpt-3.5-turbo',
+            model='gpt-4',
             messages=[{"role": "user", "content": prompt}],
-            stream=True,
+            # stream=True,
             provider=g4f.Provider.ChatgptAi
         )
         full_text = []
