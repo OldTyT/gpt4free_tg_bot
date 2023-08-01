@@ -14,7 +14,11 @@ from .Providers import (
     Bard,
     Vercel,
     Pierangelo,
-    Forefront
+    Forefront,
+    Lockchat,
+    EasyChat,
+    DfeHub,
+    ChatgptAi
 )
 
 Palm = Bard

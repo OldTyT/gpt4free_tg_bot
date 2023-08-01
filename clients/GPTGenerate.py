@@ -65,7 +65,7 @@ class GPT4TextGenerate(BaseSettings):
             model='gpt-3.5-turbo',
             messages=[{"role": "user", "content": prompt}],
             stream=True,
-            provider=g4f.Provider.Bing
+            provider=g4f.Provider.ChatgptAi
         )
         full_text = []
         max_length = 150
