@@ -1,14 +1,15 @@
-import os
+# Need refactor.
 import asyncio
-from datetime import datetime, timezone, timedelta
+import os
+from datetime import datetime, timedelta, timezone
 
 from aiogram import Bot
 from sqlalchemy import select
 
-from models.configs import GlobalConfigs
-from models.history import Chats
 from db.base import get_session
 from logger import logger
+from models.configs import GlobalConfigs
+from models.history import Chats
 
 cfg = GlobalConfigs()
 bot = Bot(token=cfg.telegram_token_bot.get_secret_value())
@@ -33,7 +34,12 @@ async def send_message_inactive_chats(chats: list):
 
 async def get_inactive_chats():
     session = [session_q async for session_q in get_session()][0]
-    chats = await session.execute(select(Chats).where(Chats.message_last_time < (datetime.now(timezone.utc) - timedelta(days=cfg.inactive_days))))  # noqa E501
+    chats = await session.execute(
+        select(Chats).where(
+            Chats.message_last_time
+            < (datetime.now(timezone.utc) - timedelta(days=cfg.inactive_days))
+        )
+    )  # noqa E501
     chats_inactive = []
     chats = chats.scalars().all()
     for chat in chats:
@@ -46,7 +52,7 @@ async def main_async():
     chats = await get_inactive_chats()
     if await send_message_inactive_chats(chats):
         return
-    else:
-        os.exit(1)
+    os.exit(1)
+
 
 main()

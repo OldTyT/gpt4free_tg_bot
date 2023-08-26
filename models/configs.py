@@ -1,13 +1,16 @@
+"""Class global configs."""
 import os
 
-from pydantic import SecretStr, BaseSettings
+from pydantic import BaseSettings, SecretStr
 
 
 class GlobalConfigs(BaseSettings):
+    """Class global configs."""
+
     default_inactive_message = """Hello!
 It's been a while since I've seen you(
 I miss you."""
-    pre_prompt = """"""
+    pre_prompt = ""
     inactive_days = int(os.getenv("INACTIVE_DAYS", 7))
     telegram_token_bot = SecretStr(os.getenv("TELEGRAM_BOT_TOKEN"))
     redis_host = str(os.getenv("REDIS_HOST", "localhost"))

@@ -1,12 +1,13 @@
-import json
+# Need refactor.
 import asyncio
+import json
 
-from sqlalchemy import select
 from pydantic import BaseSettings
+from sqlalchemy import select
 
-from models.history import MessageHistory, CallbackQueryHistory, Chats
 from db.base import get_session
 from logger import logger
+from models.history import CallbackQueryHistory, Chats, MessageHistory
 
 
 class UpdateLastTimeMessage(BaseSettings):
@@ -24,11 +25,7 @@ class UpdateLastTimeMessage(BaseSettings):
             chat.message_last_time = time
             chat.message_count += 1
         else:
-            chat = Chats(
-                chat_id=chat_id,
-                message_last_time=time,
-                message_count=1
-            )
+            chat = Chats(chat_id=chat_id, message_last_time=time, message_count=1)
             session.add(chat)
         try:
             await session.commit()
@@ -71,12 +68,14 @@ class CallbackQuerySaver(BaseSettings):
     async def save_cq(self, callback_query):
         session = [session_q async for session_q in get_session()][0]
         logger.debug(callback_query)
-        callback_query_h = CallbackQueryHistory(callback_query=json.loads(str(callback_query)))
+        callback_query_h = CallbackQueryHistory(
+            callback_query=json.loads(str(callback_query))
+        )
         session.add(callback_query_h)
         try:
             await session.commit()
             return True
         except Exception as ex:
             await session.rollback()
-            logger.error(ex)
+            logger.error(f"Error in func CallbackQuerySaver: {ex}")
             return False
