@@ -13,7 +13,7 @@ jobs:
     name: Lint
     steps:
       - name: Flake8 check
-        uses: oldtyt/docker-flake8@v2
+        uses: oldtyt/docker-flake8@master
   build:
     needs: [flake8-lint]
     name: Build & Push
