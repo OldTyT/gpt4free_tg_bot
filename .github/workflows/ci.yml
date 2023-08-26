@@ -11,11 +11,9 @@ jobs:
   flake8-lint:
     runs-on: ubuntu-latest
     name: Lint
-    container:
-      image: ghcr.io/oldtyt/docker-flake8
     steps:
       - name: Flake8 check
-        run: flake8
+        uses: oldtyt/docker-flake8@v2
   build:
     needs: [flake8-lint]
     name: Build & Push
