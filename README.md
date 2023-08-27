@@ -2,6 +2,10 @@
 
 Telegram bot for generating text with g4f.
 
+## Metrics
+
+[Dashboard](https://github.com/OldTyT/gpt4free_tg_bot/blob/master/grafana/gpt4free_tg_bot.json) was prepared for data visualization in grafana.
+
 ## Environment variables
 
 |Variable|What is it|Default value|
@@ -20,7 +24,6 @@ Telegram bot for generating text with g4f.
 | `POSTGRES_PORT` | Postgres port | `5432` |
 | `POSTGRES_DB` | Postgres database | `postgres` |
 
-
 ## TODO
 
-* Markdown validator after generate text
+* Markdown validator after generate text.
