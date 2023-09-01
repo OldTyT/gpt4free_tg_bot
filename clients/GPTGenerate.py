@@ -66,6 +66,7 @@ class GPT4TextGenerate(BaseSettings):
             model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
             provider=g4f.Provider.DeepAi,
+            stream=True
         )
         full_text = []
         max_length = 150
