@@ -1,16 +1,14 @@
-from typing import Dict, List, NewType, Optional, Union, get_type_hints
+from typing import Any, AsyncGenerator, Generator, NewType, Tuple, TypedDict, Union
 
-sha256 = NewType("sha_256_hash", str)
+SHA256 = NewType('sha_256_hash', str)
+CreateResult = Generator[str, None, None]
 
-
-class MetaModels(type):
-    def __str__(cls):
-        output: List = [
-            f"class Engines:\n",
-            f"  class {cls.gpt_35_turbo.__name__}:",
-            "    ...",
-            f"  class {cls.gpt_4.__name__}:",
-            "    ...",
-        ]
-
-        return "\n".join(output)
+__all__ = [
+    'Any',
+    'AsyncGenerator',
+    'Generator',
+    'Tuple',
+    'TypedDict',
+    'SHA256',
+    'CreateResult',
+]

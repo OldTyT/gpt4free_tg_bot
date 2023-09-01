@@ -65,7 +65,7 @@ class GPT4TextGenerate(BaseSettings):
         response = g4f.ChatCompletion.create(
             model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
-            provider=g4f.Provider.ChatgptAi,
+            provider=g4f.Provider.DeepAi,
         )
         full_text = []
         max_length = 150
