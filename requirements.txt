@@ -1,6 +1,6 @@
 aiogram==3.0.0
 loguru==0.7.0
-pydantic==1.10.9
+pydantic==2.3.0
 redis==5.0.0
 rq==1.15.1
 pyTelegramBotAPI==4.13.0
