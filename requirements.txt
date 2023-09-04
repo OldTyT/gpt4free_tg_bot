@@ -1,5 +1,5 @@
 aiogram==3.0.0
-loguru==0.7.0
+loguru==0.7.1
 pydantic==2.3.0
 redis==5.0.0
 rq==1.15.1
