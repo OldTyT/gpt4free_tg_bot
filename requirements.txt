@@ -1,7 +1,7 @@
 aiogram==2.25.1
 loguru==0.7.1
-pydantic==2.3.0
-redis==5.0.0
+pydantic==1.10.9
+redis==4.6.0
 rq==1.15.1
 pyTelegramBotAPI==4.13.0
 browser-cookie3==0.19.1
