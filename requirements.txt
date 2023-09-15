@@ -12,7 +12,7 @@ asyncpg==0.28.0
 SQLAlchemy==2.0.20
 typer==0.9.0
 pyjsparser==2.7.1
-httpx==0.24.1
+httpx==0.25.0
 pycryptodome==3.18.0
 pycryptodomex==3.18.0
 js2py
