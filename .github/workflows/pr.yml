@@ -10,6 +10,6 @@ jobs:
     name: Lint
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4.1.1
       - name: Flake8 check
         uses: oldtyt/docker-flake8@master
